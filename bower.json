@@ -1,5 +1,5 @@
 {
-	"name": "egkyron",
+	"name": "egkyron-core-angular",
 	"version": "0.2.0",
 	"main": "egkyron-core.js",
 	"ignore": [
