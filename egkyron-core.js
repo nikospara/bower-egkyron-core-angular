@@ -20,7 +20,13 @@ function Constraint(key, validator, params) {
 	 */
 	this.validator = validator;
 	/**
-	 * Any parameterizations to the validation logic.
+	 * Any parameterizations to the validation logic. Some params are standard, i.e. handled by the infrastructure:
+	 * <ul>
+	 *   <li><code>condition</code>: A function taking the same arguments as the validator; if present it will be called
+	 *       <em>before</em> the validator and, if it returns <code>false</code>, will bypass calling the validator
+	 *       altogether. Note that it has to return a literal <code>false</code>, not a falsey value.</li>
+	 * </ul>
+	 *
 	 * @member {Object}
 	 */
 	this.params = params;
@@ -623,6 +629,12 @@ Validator.prototype.evaluateConstraints = function(vctx, constraints, ctxObject,
 		constraints = this.normalizeConstraints(constraints);
 		for (i = 0; i < constraints.length; i++) {
 			constraint = constraints[i];
+			if( typeof(constraint.params.condition) === 'function' ) {
+				res = constraint.params.condition.call(ctxObject, value, constraint.params, vctx);
+				if( res === false ) {
+					continue;
+				}
+			}
 			if( inGroups(constraint, groups) ) {
 				vctx.setCurrentConstraintName(constraint.key);
 				res = constraint.validator.call(ctxObject, value, constraint.params, vctx);
