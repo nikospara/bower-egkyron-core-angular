@@ -436,6 +436,22 @@ ValidationContext.prototype.popPath = function() {
 };
 
 /**
+ * Convenience method to check if this, or any path validation result passed as argument is valid.
+ *
+ * @param {object} [arg] - The path validation result, if left <code>null</code> or <code>undefined</code> the results of this object are checked.
+ */
+ValidationContext.prototype.hasValidationErrors = function(arg) {
+	var result = arg || this.result;
+
+	if( result ) {
+		return !result._thisValid || result._childrenValid === false;
+	}
+	else {
+		return false;
+	}
+};
+
+/**
  *
  */
 return ValidationContext;
